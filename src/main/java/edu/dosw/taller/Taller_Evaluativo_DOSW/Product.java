@@ -8,7 +8,7 @@ public class Product{
     private double price;
     private int stock;
     private String category;
-    private ArrayList<EventListener> observers;
+    private ArrayList<StockObserver> observers;
     
     public Product (String name, double price, int stock, String category){
         this.name = name;
@@ -39,12 +39,12 @@ public class Product{
         return  category;
     }
     
-    public void addObserver(EventListener observer){
+    public void addObserver(StockObserver observer){
         observers.add(observer);
     }
     
     public void notifyObservers(){
-        for (EventListener b : observers){
+        for (StockObserver b : observers){
             b.writeUpdate(this);
         }
     }

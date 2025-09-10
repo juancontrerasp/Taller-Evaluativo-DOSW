@@ -1,6 +1,6 @@
 package edu.dosw.taller.Taller_Evaluativo_DOSW;
     
-public class AlertAgent implements EventListener{
+public class AlertAgent implements StockObserver{
     @Override
     public void writeUpdate(Product product){
         if (product.getStock() < 5){

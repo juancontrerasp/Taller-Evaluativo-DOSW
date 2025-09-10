@@ -4,6 +4,8 @@ import java.util.stream.Collectors;
 
 public class Inventory {
     private HashMap<String, Product> products;
+    private StockObserver alertAgent = new AlertAgent();
+    private StockObserver logAgent = new LogAgent();
 
     public void getAllStock() {
         String result = products.values().stream()
@@ -21,7 +23,16 @@ public class Inventory {
     }
     
     public void addProduct(String name, double price, int stock, String category){
-        products.put(name, new Product(name,price,stock,category));
+        name = name.toLowerCase();
+        Product p = new Product(name,price,stock,category);
+        p.addObserver(alertAgent);
+        p.addObserver(logAgent);
+
+        products.put(name, p);
+    }
+
+    public Product getProduct(String product){
+        return products.get(product.toLowerCase());
     }
     
     

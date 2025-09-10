@@ -1,5 +1,5 @@
 package edu.dosw.taller.Taller_Evaluativo_DOSW;
 
-public interface EventListener {
+public interface StockObserver {
     void writeUpdate(Product product);
 }
