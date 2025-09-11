@@ -1,24 +1,19 @@
 package edu.dosw.taller.Taller_Evaluativo_DOSW.Comportamiento;
 
+import org.springframework.stereotype.Component;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Component
 public class Inventory {
     private HashMap<String, Product> products = new HashMap<>();
-    private List<StockObserver> observers = new ArrayList<>();
+    private List<StockObserver> observers;
 
-    public Inventory() {
-        observers.add(new AlertAgent());
-        observers.add(new LogAgent());
-    }
-
-    public Inventory(StockObserver... observers) {
-        this.observers = new ArrayList<>();
-        for (StockObserver observer : observers) {
-            this.observers.add(observer);
-        }
+    public Inventory(List<StockObserver> observers) {
+        this.observers = new ArrayList<>(observers);
     }
 
     public void addProduct(String name, double price, int stock, String category) {
