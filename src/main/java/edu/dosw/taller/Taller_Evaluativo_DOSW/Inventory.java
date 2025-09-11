@@ -3,7 +3,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Inventory {
-    private HashMap<String, Product> products;
+    private HashMap<String, Product> products = new HashMap<>();
     private StockObserver alertAgent = new AlertAgent();
     private StockObserver logAgent = new LogAgent();
 
@@ -16,8 +16,15 @@ public class Inventory {
 
 
     public void getStock(String product) {
-        System.out.println(product + "Stock: " + products.get(product).getStock());
+        product = product.toLowerCase();
+        Product p = products.get(product);
+        if (p == null) {
+            System.out.println("Producto " + product + " no encontrado.");
+            return;
+        }
+        System.out.println(product + " Stock: " + p.getStock());
     }
+    
     public void modifyStock(String product, int stock){
         products.get(product).modifyStock(stock);
     }
