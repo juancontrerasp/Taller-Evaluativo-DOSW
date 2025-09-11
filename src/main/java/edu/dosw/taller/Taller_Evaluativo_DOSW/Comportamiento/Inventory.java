@@ -1,4 +1,4 @@
-package edu.dosw.taller.Taller_Evaluativo_DOSW;
+package edu.dosw.taller.Taller_Evaluativo_DOSW.Comportamiento;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -24,18 +24,28 @@ public class Inventory {
         }
         System.out.println(product + " Stock: " + p.getStock());
     }
-    
-    public void modifyStock(String product, int stock){
-        products.get(product).modifyStock(stock);
-    }
-    
-    public void addProduct(String name, double price, int stock, String category){
+
+    public void addProduct(String name, double price, int stock, String category) {
         name = name.toLowerCase();
-        Product p = new Product(name,price,stock,category);
+        if (products.containsKey(name)) {
+            System.out.println("El producto " + name + " ya existe.");
+        }
+        if (stock < 0 || price < 0) {
+            System.out.println("Stock y precio deben ser no negativos.");
+        }
+        Product p = new Product(name, price, stock, category);
         p.addObserver(alertAgent);
         p.addObserver(logAgent);
-
         products.put(name, p);
+    }
+
+    public void modifyStock(String product, int stock) {
+        product = product.toLowerCase();
+        Product p = products.get(product);
+        if (p == null) {
+            System.out.println("Producto " + product + " no encontrado.");
+        }
+        p.modifyStock(stock);
     }
 
     public Product getProduct(String product){

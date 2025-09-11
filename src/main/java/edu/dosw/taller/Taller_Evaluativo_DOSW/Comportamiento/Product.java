@@ -1,4 +1,4 @@
-package edu.dosw.taller.Taller_Evaluativo_DOSW;
+package edu.dosw.taller.Taller_Evaluativo_DOSW.Comportamiento;
 
 import java.util.ArrayList;
 
@@ -45,7 +45,7 @@ public class Product{
     
     public void notifyObservers(){
         for (StockObserver b : observers){
-            b.writeUpdate(this);
+            b.update(this);
         }
     }
     
