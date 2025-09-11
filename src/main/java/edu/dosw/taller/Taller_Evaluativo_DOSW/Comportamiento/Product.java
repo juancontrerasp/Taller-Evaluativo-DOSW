@@ -43,7 +43,7 @@ public class Product{
         observers.add(observer);
     }
     
-    public void notifyObservers(){
+    private void notifyObservers(){
         for (StockObserver b : observers){
             b.update(this);
         }
