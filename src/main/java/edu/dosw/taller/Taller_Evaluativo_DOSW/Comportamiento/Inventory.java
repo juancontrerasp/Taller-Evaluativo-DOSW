@@ -1,42 +1,45 @@
 package edu.dosw.taller.Taller_Evaluativo_DOSW.Comportamiento;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class Inventory {
     private HashMap<String, Product> products = new HashMap<>();
-    private StockObserver alertAgent = new AlertAgent();
-    private StockObserver logAgent = new LogAgent();
+    private List<StockObserver> observers = new ArrayList<>();
 
-    public void getAllStock() {
-        String result = products.values().stream()
-                .map(p -> "Producto: " + p.getName() + " Stock: " + p.getStock())
-                .collect(Collectors.joining("\n"));
-        System.out.println(result);
+    public Inventory() {
+        observers.add(new AlertAgent());
+        observers.add(new LogAgent());
     }
 
-
-    public void getStock(String product) {
-        product = product.toLowerCase();
-        Product p = products.get(product);
-        if (p == null) {
-            System.out.println("Producto " + product + " no encontrado.");
-            return;
+    public Inventory(StockObserver... observers) {
+        this.observers = new ArrayList<>();
+        for (StockObserver observer : observers) {
+            this.observers.add(observer);
         }
-        System.out.println(product + " Stock: " + p.getStock());
     }
 
     public void addProduct(String name, double price, int stock, String category) {
+        if (name == null || name.trim().isEmpty()) {
+            System.out.println("El nombre no puede estar vacío.");
+        }
+        if (category == null || category.trim().isEmpty()) {
+            System.out.println("La categoría no puede estar vacía.");
+        }
+        if (price < 0 || stock < 0) {
+            System.out.println("Precio y stock deben ser no negativos.");
+        }
         name = name.toLowerCase();
         if (products.containsKey(name)) {
             System.out.println("El producto " + name + " ya existe.");
         }
-        if (stock < 0 || price < 0) {
-            System.out.println("Stock y precio deben ser no negativos.");
+        Product product = new Product(name, price, stock, category);
+        for (StockObserver observer : observers) {
+            product.addObserver(observer);
         }
-        Product p = new Product(name, price, stock, category);
-        p.addObserver(alertAgent);
-        p.addObserver(logAgent);
-        products.put(name, p);
+        products.put(name, product);
     }
 
     public void modifyStock(String product, int stock) {
@@ -48,9 +51,29 @@ public class Inventory {
         p.modifyStock(stock);
     }
 
-    public Product getProduct(String product){
+    public Product getProduct(String product) {
         return products.get(product.toLowerCase());
     }
-    
-    
+
+    public void getStock(String product) {
+        product = product.toLowerCase();
+        Product p = products.get(product);
+        if (p == null) {
+            System.out.println("Producto " + product + " no encontrado.");
+            return;
+        }
+        System.out.println(product + " Stock: " + p.getStock());
+    }
+
+    public void getAllStock() {
+        if (products.isEmpty()) {
+            System.out.println("No hay productos en el inventario.");
+            return;
+        }
+
+        String result = products.values().stream()
+                .map(p -> "Producto: " + p.getName() + " Stock: " + p.getStock())
+                .collect(Collectors.joining("\n"));
+        System.out.println(result);
+    }
 }
