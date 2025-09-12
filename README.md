@@ -1,57 +1,90 @@
-# Sistema de Monitoreo de Stock
+# Taller Evaluativo DOSW - Sistema de Monitoreo de Stock
 
-## Juan Pablo Contreras
+
+## Juan Pablo Contreras Parra
 
 ---
 
 ## Descripción
-Este proyecto implementa un sistema de monitoreo de stock en Java, diseñado para cumplir con los siguientes requisitos funcionales:
-1. **Añadir Productos**: Permite agregar productos con nombre, precio, cantidad en stock y categoría.
-2. **Modificar Stock**: Actualiza la cantidad disponible de un producto y notifica a los interesados.
-3. **Notificar Cambios**: Notifica a dos agentes cuando el stock cambia:
-   - **Agente 1 (LogAgent)**: Imprime en consola las unidades disponibles.
-   - **Agente 2 (AlertAgent)**: Genera una alerta en consola si el stock es menor a 5 unidades.
+Este proyecto es una aplicación desarrollada con **Maven** y **Spring Boot** que implementa un sistema de gestión y monitoreo de inventario. Permite añadir productos, modificar su stock y notificar cambios a través de agentes observadores (`AlertAgent` y `LogAgent`) utilizando el patrón Observer. El sistema genera alertas cuando el stock de un producto cae por debajo de 5 unidades y registra los niveles de stock en la consola. Está diseñado siguiendo los principios SOLID y cumple con los requerimientos funcionales del cliente.
 
-El sistema está diseñado siguiendo los principios **SOLID** y utiliza el patrón de diseño **Observer** para manejar las notificaciones de cambios en el stock de manera desacoplada y extensible.
+## Patrón de Diseño
+- **Patrón**: **Observer (Observador)**.
+- **Razón**: Se seleccionó este patrón para notificar dinámicamente a múltiples agentes (observadores) cuando el stock de un producto cambia, desacoplando la lógica de negocio de `Product` e `Inventory` de las notificaciones. Esto permite agregar nuevos tipos de observadores (e.g., notificaciones por email) sin modificar el código existente, cumpliendo con el principio OCP (Abierto/Cerrado).
 
-## Estructura del Proyecto
-El proyecto está organizado en el paquete `edu.dosw.taller.Taller_Evaluativo_DOSW` y contiene las siguientes clases:
+## Diagramas
 
-- **Product.java**: Representa un producto con atributos (nombre, precio, stock, categoría) y maneja la notificación a observadores cuando el stock cambia.
-- **StockObserver.java**: Interfaz que define el contrato para los observadores, con el método `writeUpdate(Product)`.
-- **AlertAgent.java**: Implementación de `StockObserver` que imprime una alerta si el stock es menor a 5.
-- **LogAgent.java**: Implementación de `StockObserver` que imprime el stock actual de un producto.
-- **Inventory.java**: Gestiona la colección de productos, permite añadir productos, modificar stock y consultar el inventario.
+### Diagrama de Contexto
 
-## Uso del Patrón Observer
-El patrón **Observer** se implementa para notificar a los agentes (`AlertAgent` y `LogAgent`) cuando el stock de un producto cambia. Este patrón es ideal para este caso, ya que permite desacoplar la lógica de los productos de la lógica de notificación, facilitando la adición de nuevos agentes en el futuro sin modificar el código existente.
+![DiagramaContexto](docs/imagenes/DiagramaContexto.png)
 
-### Implementación del Patrón Observer
-1. **Sujeto (Product)**:
-   - La clase `Product` actúa como el sujeto observado.
-   - Mantiene una lista de observadores (`ArrayList<StockObserver>`) y proporciona métodos para agregar observadores (`addObserver`) y notificarlos (`notifyObservers`).
-   - Cuando se llama a `modifyStock`, actualiza el stock y ejecuta `notifyObservers`, que invoca el método `writeUpdate` de cada observador registrado, pasando el producto actualizado como parámetro.
 
-2. **Observadores (AlertAgent y LogAgent)**:
-   - La interfaz `StockObserver` define el método `writeUpdate(Product)` que todos los observadores deben implementar.
-   - `LogAgent`: Imprime en consola el nombre del producto y su stock actual (e.g., "Laptop: 8 unidades").
-   - `AlertAgent`: Verifica si el stock es menor a 5 y, si es así, imprime una alerta (e.g., "ALERTA: Quedan menos de 5 unidades del producto Laptop").
+### Diagrama de Casos de Uso
 
-3. **Gestión en Inventory**:
-   - La clase `Inventory` inicializa los observadores (`AlertAgent` y `LogAgent`) y los registra automáticamente en cada nuevo producto creado mediante `addProduct`.
-   - Cuando se actualiza el stock con `modifyStock`, se delega a `Product.modifyStock`, lo que desencadena la notificación a los observadores.
+![CasosDeUso](docs/imagenes/CasosDeUso.png)
 
-### Beneficios del Patrón Observer
-- **Desacoplamiento**: Los productos no necesitan conocer los detalles de los observadores, solo que implementan `StockObserver`.
-- **Extensibilidad**: Se pueden añadir nuevos observadores (e.g., uno que envíe correos) sin modificar `Product` o `Inventory`, cumpliendo con el **Open-Closed Principle (OCP)**.
-- **Reusabilidad**: Los observadores son independientes y pueden usarse en otros contextos si es necesario.
+### Diagrama de Clases
 
-## Aplicación de Principios SOLID
-- **Single Responsibility Principle (SRP)**: Cada clase tiene una única responsabilidad:
-  - `Product`: Maneja datos del producto y notificaciones.
-  - `Inventory`: Gestiona la colección de productos.
-  - `AlertAgent` y `LogAgent`: Manejan lógicas específicas de notificación.
-- **Open-Closed Principle (OCP)**: El sistema permite añadir nuevos observadores sin modificar el código existente.
-- **Liskov Substitution Principle (LSP)**: Cualquier implementación de `StockObserver` puede sustituirse sin afectar el comportamiento.
-- **Interface Segregation Principle (ISP)**: La interfaz `StockObserver` es mínima y específica.
-- **Dependency Inversion Principle (DIP)**: `Product` depende de la abstracción `StockObserver`, no de implementaciones concretas.
+![DiagramaDeClases](docs/imagenes/DiagramaDeClases.png)
+
+---
+
+## Épicas, Features y User Stories (HU) con Estimaciones
+### Criterios de Aceptación
+- Añadir producto con validaciones (nombre, categoría no vacíos, precio/stock no negativos).
+- Modificar stock con notificación a observadores.
+- Alertas para stock < 5 unidades.
+- Consultas de stock individuales y totales.
+
+### Épicas
+- **Épica 1: Gestión de Inventario**
+    - Features: Añadir productos, Consultar stock.
+- **Épica 2: Notificación de Cambios**
+    - Features: Modificar stock, Generar alertas.
+
+### Features y HU con Estimaciones (Puntos Fibonacci)
+- **Feature 1: Añadir productos**
+    - HU1.1: Registrar producto (Datos válidos, único) - 3 puntos.
+    - HU1.2: Consultar producto (Búsqueda case-insensitive) - 2 puntos.
+    - HU1.3: Consultar inventario (Lista o vacío) - 2 puntos.
+- **Feature 2: Modificar stock**
+    - HU2.1: Modificar stock (Actualiza y notifica) - 3 puntos.
+- **Feature 3: Notificar stock**
+    - HU3.1: Imprimir stock (Al cambiar stock) - 2 puntos.
+- **Feature 4: Generar alertas**
+    - HU4.1: Alerta stock bajo (Si < 5) - 2 puntos.
+- **Total**: 14 puntos. Plan: Sprint 1 (10 puntos): HU1.1-HU2.1. Sprint 2 (4 puntos): HU3.1-HU4.1.
+
+## Inyección de Dependencias
+El proyecto utiliza inyección de dependencias manual en `MainExecution`, donde se instancia `Inventory` con una lista de observadores (`AlertAgent` y `LogAgent`) mediante el constructor. Para una implementación más robusta con Spring, se recomienda configurar `AlertAgent` y `LogAgent` como beans con `@Component` y usar `@Autowired` en `Inventory` para inyectarlos automáticamente.
+
+## Pruebas Unitarias y Cobertura
+- **Framework**: JUnit 5 con Mockito para pruebas unitarias.
+- **Clases Probadas**: `AlertAgent`, `LogAgent`, `Product`, `Inventory`, y `MainExecution`.
+- **Cobertura**: Configurada con Jacoco, con un mínimo del 80%. Ejecuta `mvn test jacoco:report` para generar el informe en `target/site/jacoco/index.html`.
+- **SonarQube**: Integrado para análisis de calidad. Ejecuta `mvn sonar:sonar` tras configurar SonarCloud o un servidor local.
+
+## Evidencias de Funcionamiento
+### Salida Esperada al Ejecutar `mvn spring-boot:run`
+```
+Producto: Laptop Stock: 10
+Producto: Libro Stock: 3
+Producto: Telefono Stock: 7
+Laptop: 8 unidades
+Libro: 4 unidades
+ALERTA: Quedan menos de 5 unidades del producto Libro
+Telefono: 6 unidades
+Laptop Stock: 8
+Libro Stock: 4
+Verificación: Producto Laptop tiene stock 8
+```
+
+### Cobertura Jacoco
+- Tras ejecutar `mvn test jacoco:report`, el informe en `target/site/jacoco/index.html` muestra >80% de cobertura en clases como `AlertAgent`, `LogAgent`, `Product`, e `Inventory`.
+
+![jacoco](docs/imagenes/jacoco.png)
+
+### Análisis SonarQube
+- Al ejecutar `mvn sonar:sonar`, el análisis confirma la adherencia a estándares de calidad y cobertura.
+
+![sonar](docs/imagenes/sonar.png)
