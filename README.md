@@ -91,3 +91,4 @@ Verificación: Producto Laptop tiene stock 8
 
 ### Comandos de maven necesarios
   1. mvn clean install
+  2. mvn clean test
