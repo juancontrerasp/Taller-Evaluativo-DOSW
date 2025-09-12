@@ -88,3 +88,6 @@ Verificación: Producto Laptop tiene stock 8
 - Al ejecutar `mvn sonar:sonar`, el análisis confirma la adherencia a estándares de calidad y cobertura.
 
 ![sonar](docs/imagenes/sonar.png)
+
+### Comandos de maven necesarios
+  1. mvn clean install
