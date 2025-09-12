@@ -94,3 +94,5 @@ Verificación: Producto Laptop tiene stock 8
   2. mvn clean test
   3. mvn test
   4. mvn test jacoco:report
+  5. mvn spring-boot:run
+  6. mvn clean verify sonar:sonar -Dsonar.projectKey=Taller-Evaluativo-DOSW -Dsonar.host.url=http://localhost:9000 -Dsonar.token=TU_TOKEN
